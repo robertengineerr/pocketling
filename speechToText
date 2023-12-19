@@ -1,0 +1,69 @@
+#Use speech to text to translate
+
+#Import vosk and pyaudio for speech to text
+#https://www.youtube.com/watch?v=3Mga7_8bYpw&ab_channel=BrandonJacobson Tutorial I got this from
+from cgitb import text
+from vosk import Model, KaldiRecognizer 
+import pyaudio
+import json
+
+#Imports google translate
+from googletrans import Translator
+
+#try gTTS again
+from gtts import gTTS
+import os
+
+
+#variables that I will need
+fromLanguage = "en"
+targetLanguge = "es"
+
+
+#pass the absolute path by adding 'r'
+fromLanguage = Model(r"/Volumes/OTHER_OS/PocketLing/vosk_files/vosk-model-small-en-us-0.15")
+#got it from https://alphacephei.com/vosk/models You can find other models/languages there as well. This is for Vosk
+
+#recognize
+recognizer = KaldiRecognizer(fromLanguage, 16000)
+
+#use pyaudio to record
+    #I just followed what the tutorial said
+mic = pyaudio.PyAudio()
+stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
+stream.start_stream()
+
+#make a loop to record
+while True:
+    data = stream.read(4096)
+    if recognizer.AcceptWaveform(data):
+        #You have to use json here or it will read "text" in the output
+        userInput = json.loads(recognizer.Result())["text"]
+        print(userInput)
+
+        #declare a function
+        tl = Translator()
+
+        #Recieve input from user (leaving it commented for now)
+        #userInput = input('Text to translate...\n')
+
+        #translate input
+        output = tl.translate(userInput, dest=targetLanguge)
+
+        #print to terminal
+        print(output.text)
+        
+        #text-to-speech
+        integerForFile = 1
+        file = "file" + str(integerForFile) + ".mp3"
+        tts = gTTS(output.text, lang=targetLanguge)
+        tts.save(file)
+        os.system("mpg123 " + file)
+        integerForFile=+1
+        
+        
+        
+        
+        
+        
+        

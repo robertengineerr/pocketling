@@ -1,0 +1,6 @@
+import os
+import chatgpt
+session_token = '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'
+api = chatgpt(session_token)
+resp = api.send_message('Write a Christmas story')
+print(resp['message'])

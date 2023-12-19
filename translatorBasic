@@ -1,0 +1,19 @@
+#Just trying to translate text for now
+from googletrans import Translator
+import chatgpt
+import openai
+
+openai.api_key = os.getenv("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")
+#imports the api key
+
+#declare a function or something?? Idk why this is here
+tl = Translator()
+
+#Recieve input from user
+userInput = input('Text to translate...\n')
+
+#translate input
+out = tl.translate(userInput, dest="es")
+
+#print to terminal
+print("Your text reads: '", out.text, "'")
